@@ -1,8 +1,9 @@
 const express =require('express');
 const http  =   require("http");
 const app=express();
-
+const formatMessage=require('./utils/messages')
 const socketio=require('socket.io');
+const botName='ChatUp Bot';
 
 const server=http.createServer(app);
 const io=socketio(server);
@@ -13,21 +14,21 @@ app.use(express.static(path.join(__dirname,'public')))
 io.on('connection',socket=>{
     
     //welcome current user
-    socket.emit('message','Welcomme to Chatup');
+    socket.emit('message', formatMessage(botName,'Welcomme to Chatup'));
 
     //brodcast when a user connect
-    socket.broadcast.emit('message','A user has join the chat');
+    socket.broadcast.emit('message',formatMessage(botName ,'A user has join the chat'));
  
  
     // when user disconnect
     socket.on('disconnect', ()=>{
-        io.emit('message','A user has left the chat');
+        io.emit('message', formatMessage(botName ,'A user has left the chat'));
     });
 
     // listen to chat message
 
     socket.on('chatMessage',msg=>{
-        io.emit('message',msg)
+        io.emit('message',formatMessage('User' ,msg))
     })
 });
 
